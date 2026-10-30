@@ -1,0 +1,176 @@
+//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
+// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+public class Main {
+    public static void main(String[] args) {
+        //crear a la persona
+        Persona viajero = new Persona("Romario", "Salas Cerdas");
+        Persona viajero1 = new Persona("Jaime", "Victoria");
+
+        //1. Intentar tomar un vuelo sin haber sacado pasaporte
+        System.out.println("--- Prueba 1: Sin pasaporte ---");
+        viajero.tomarVuelo("España");
+
+        //2. Sacar pasaporte (se crea vigente por defecto)
+        System.out.println("\n--- Tramitando pasaporte ---");
+        viajero.sacarPasaporte("A123456", "Costarricense",
+                "01/10/2026", "01/10/2036");
+
+        //3. Intentar tomar el vuelo con pasaporte vigente
+        System.out.println("\n---Prueba 2: Con pasaporte vigente ---");
+        viajero.tomarVuelo("España");
+
+        //4. Jugar con la Mascota
+        System.out.println("\n---Prueba de jugar con mascota---");
+        Mascota perro = new Mascota("Firulais", "Rotweiller", 5);
+        viajero.adoptarMascota(perro);
+        viajero.jugar();
+        viajero1.adoptarMascota(perro);
+        viajero1.jugar();
+
+        //5. Maquina de Soldar
+        System.out.println("\n---Prueba de maquina de soldar---");
+        String[] Metales = new String [5];
+        Metales [0] = "Hierro";
+        Metales [1] = "Acero";
+        Metales [2] = "Aluminio";
+        Metales [3] = "Oro";
+        Metales [4] = "Platino";
+        MaquinaSoldar maquina = new MaquinaSoldar("Miller", "ModSCM01", 600, Metales);
+        viajero1.soldar(maquina, "Plomo");
+        viajero.soldar(maquina, "Hierro");
+}
+}import java.util.ArrayList;
+import java.util.Arrays;
+
+public class MaquinaSoldar {
+    //Atributos
+    private String marca;
+    private String modelo;
+    private int potencia;
+    private ArrayList<String> metalesPermitidos;
+
+    //Constructor
+    public MaquinaSoldar(String marca, String modelo, int potencia, String[] metalesPermitidos) {
+        this.marca = marca;
+        this.modelo = modelo;
+        this.potencia = potencia;
+        this.metalesPermitidos = new ArrayList<>(Arrays.asList(metalesPermitidos));
+    }
+
+    //Setters
+    public void soldar(String metal) {
+        if (metalesPermitidos.contains(metal)){
+            System.out.println("La maquina de soldar marca: " + marca + ", modelo: " + modelo +
+                    " puede soldar " + metal + ".");
+        } else{
+            System.out.println("La maquina de soldar marca: " + marca + ", modelo: " + modelo +
+                    " no puede soldar " + metal + ".");
+        }
+    }
+}
+public class Mascota {
+    //Atributos
+    private String nombreMascota;
+    private String especie;
+    private int edadMascota;
+
+    //Constructor
+    public Mascota(String nombreMascota, String especie, int edadMascota) {
+        this.nombreMascota = nombreMascota;
+        this.especie = especie;
+        this.edadMascota = edadMascota;
+    }
+
+    //Getter
+    public String getNombreMascota() {return nombreMascota;}
+    public String getEspecie() {return especie;}
+
+
+}
+public class Pasaporte {
+    //Atributos
+    private String numero;
+    private String nacionalidad;
+    private String fechaEmision;
+    private String fechaVencimiento;
+    private boolean estaVigente;
+
+    //Constructor completo
+    public Pasaporte(String numero, String nacionalidad, String fechaEmision, String fechaVencimiento,
+                     boolean estaVigente) {
+        this.numero = numero;
+        this.nacionalidad = nacionalidad;
+        this.fechaEmision = fechaEmision;
+        this.fechaVencimiento = fechaVencimiento;
+        this.estaVigente = estaVigente;
+    }
+
+    //Getter para verificar la vigencia
+    public boolean isVigente() {
+        return estaVigente;
+    }
+
+    //Setters
+
+
+    //Setter para cambiar la vigencia cuando saca uno nuevo
+    public void setEstaVigente(boolean estaVigente) {
+        this.estaVigente = estaVigente;
+    }
+
+}
+public class Persona {
+    //Atributos
+    private String nombrePersona;
+    private String apellidosPersona;
+    private Pasaporte pasaporte; //Asociacion: Persona "tiene" pasaporte
+    private Mascota mascota;
+
+    //Constructor Completo
+    public Persona(String nombrePersona, String apellidosPersona){
+        this.nombrePersona = nombrePersona;
+        this.apellidosPersona = apellidosPersona;
+        this.pasaporte = null;  //Inicialmente no se sabe si tiene pasaporte
+    }
+
+    //Metodo para sacar pasaporte
+    public void sacarPasaporte(String numero, String nacionalidad, String fechaEmision,
+                               String fechaVencimiento) {
+        //Al sacar un pasaporte nuevo, se crea el objeto y se marca como vigente (true)
+        this.pasaporte = new Pasaporte(numero, nacionalidad, fechaEmision, fechaVencimiento, true);
+        System.out.println(nombrePersona + " " + apellidosPersona +
+                " ha obtenido el papsaporte numero: " + numero + ".");
+    }
+
+    //Metodo para tomar un vuelo
+    public void tomarVuelo(String paisDestino) {
+        //Primero se verifica la existencia de pasaporte y si esta vigente
+        if (pasaporte == null || !pasaporte.isVigente()) {
+            System.out.println(nombrePersona + " " + apellidosPersona +
+                    ", no puede tomar el vuelo. Su pasaporte no esta vigente o no tiene uno.");
+        } else {
+            System.out.println(this.nombrePersona + " " + this.apellidosPersona + " toma un vuelo a " + paisDestino );
+        }
+    }
+
+    //Metodo para Mascota
+    public void adoptarMascota(Mascota mascota) {this.mascota = mascota;}
+    public void jugar() {
+        if (mascota != null) {
+            System.out.println(nombrePersona + " " + apellidosPersona + " juega con " + mascota.getNombreMascota()
+                    + ", su " + mascota.getEspecie() + ".");
+        } else {
+            System.out.println(nombrePersona + " " + apellidosPersona + " no tiene mascota para jugar.");
+        }
+    }
+
+    //Dependencia Maquina de Soldar
+    public void soldar(MaquinaSoldar maquina, String metal)
+    {System.out.println(nombrePersona + " " + apellidosPersona +
+            " intenta soldar " + metal + ".");
+        maquina.soldar(metal);
+    }
+
+
+
+}
